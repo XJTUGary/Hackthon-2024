@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import os
 from langchain_google_vertexai import VertexAI, VertexAIEmbeddings
 from langchain_community.document_loaders import TextLoader
@@ -13,6 +10,7 @@ from langchain.schema.output_parser import StrOutputParser
 from langchain.chains import RetrievalQA
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
+
 
 class InvoiceComplianceChecker:
     """
@@ -43,22 +41,24 @@ class InvoiceComplianceChecker:
 
     def _get_compliance_parser(self):
         class ComplianceCheck(BaseModel):
-            is_compliant: str = Field(description="Whether the invoice is compliant with the policies. 'Y' for Yes, 'N' for No.")
+            is_compliant: str = Field(
+                description="Whether the invoice is compliant with the policies. 'Y' for Yes, 'N' for No.")
             reason: str = Field(description="Explanation for why the invoice is or isn't compliant.")
+
         return JsonOutputParser(pydantic_object=ComplianceCheck)
 
     def _create_rag_chain(self):
         rag_template = """
         Given the following invoice details:
-        
+
         Invoice Information:
         {question}
-        
+
         Retrieve the most relevant policy information from the following pieces of context that specifically address any spending limits that apply to this invoice:
         {context}.
-        
+
         If a clear spending limit is found that applies to the invoice, return that specific limit. If no relevant spending limit is found, return a response indicating that no specific limit information was identified.
-        
+
         Note:
         1. Focus on retrieving spending limit information that is directly relevant to the invoice details provided.
         2. Avoid retrieving unrelated or overly general policy information.
@@ -76,17 +76,17 @@ class InvoiceComplianceChecker:
     def _create_compliance_chain(self):
         compliance_template = """
         Given the following policy context:
-        
+
         {policy_context}
-        
+
         And the following invoice information:
-        
+
         {invoice}
-        
+
         Check the following:
         1. Analyze the policy context to identify any applicable spending limits. Compare the invoice amount to these limits. If the invoice amount exceeds any identified limit without the necessary approvals, classify it as non-compliant.
         2. Unless you have a strong reason based on the policy to determine that the invoice is non-compliant, do not hastily judge it as non-compliant. However, if spending limits are exceeded, this should be flagged as non-compliant.
-        
+
         For each issue found, provide a detailed explanation.
         If there are multiple compliance issues, list each reason with a number (e.g., 1, 2, 3).
         Return the result in the following JSON format:
@@ -99,7 +99,7 @@ class InvoiceComplianceChecker:
         )
         return compliance_prompt | self.model | StrOutputParser()
 
-    def check_compliance(self, invoice_info: dict):
+    def check_compliance(self, invoice_info: dict) -> dict:
         """
         Check the compliance of the given invoice information with the retrieved policy context.
 
@@ -107,25 +107,41 @@ class InvoiceComplianceChecker:
             invoice_info (dict): The invoice details.
 
         Returns:
-            dict: The compliance check result in JSON format.
+            dict: The original invoice info merged with the compliance check result.
         """
         rag_chain = self._create_rag_chain()
         compliance_chain = self._create_compliance_chain()
 
         query = """
-        "invoice_number": "{invoice_number}",
+        "expense_type": "{expense_type}",
+        "invoice_id": "{invoice_id}",
         "invoice_date": "{invoice_date}",
-        "type": "{type}",
         "vendor": "{vendor}",
-        "description": "{description}",
-        "total_amount": {total_amount}
+        "customer": "{customer}",
+        "city": "{city}",
+        "currency": "{currency}",
+        "amount": {amount}
         """.format(**invoice_info)
 
         policy_context = rag_chain.invoke(query)
-        print("policy_context: ", policy_context)
-        compliance_result = compliance_chain.invoke({"policy_context": policy_context, "invoice": query})
+        compliance_result = compliance_chain.invoke({"policy_context": policy_context, "invoice": invoice_info})
 
-        return self.parser.parse(compliance_result)
+        compliance_data = self.parser.parse(compliance_result)
+        return self.merge_compliance_result(invoice_info, compliance_data)
+
+    def merge_compliance_result(self, invoice_info: dict, compliance_data: dict) -> dict:
+        """
+        Merge the compliance check result into the original invoice dictionary.
+
+        Args:
+            invoice_info (dict): The original invoice details.
+            compliance_data (dict): The compliance check result.
+
+        Returns:
+            dict: The combined dictionary with compliance information.
+        """
+        invoice_info.update(compliance_data)
+        return invoice_info
 
 
 if __name__ == "__main__":
@@ -136,12 +152,14 @@ if __name__ == "__main__":
     )
 
     invoice_info = {
-        "invoice_number": "987654",
+        "expense_type": "Transportation",
+        "invoice_id": "987654",
         "invoice_date": "07/06/2024",
-        "type": "Transportation",
         "vendor": "Beijing Transportation",
-        "description": "Taxi Fares",
-        "total_amount": "$35"
+        "customer": "John Doe",
+        "city": "Beijing",
+        "currency": "USD",
+        "amount": "80"
     }
 
     result = checker.check_compliance(invoice_info)
