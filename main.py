@@ -1,12 +1,10 @@
 import streamlit as st
 from streamlit_option_menu import option_menu
 from tools.utilities import load_css
-
 from views.dashboard import Dashboard
 from views.data_inference import DataInference
 from views.data_review import DataReview
 from views.chat import Chat
-
 import streamlit_javascript as st_js
 
 st.set_page_config(
