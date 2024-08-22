@@ -1,8 +1,5 @@
-### README: Invoice Information Extraction and Compliance Verification System
 
----
-
-# Invoice Information Extraction and Compliance Verification System
+# Invoice Insight and Compliance Analyzer
 
 ## Overview
 
