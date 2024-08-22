@@ -103,6 +103,14 @@ class DataInference:
 
         st.success("File uploaded successfully")
 
+        # response = requests.post(url="http://localhost:8080/invoice_process", files={"invoice": uploaded_file})
+        # if response.status_code == 200:
+        #     extractions = json.loads(response.content.decode("utf-8"))
+        #     with open(os.path.join("docs/inference/", uploaded_file.name.split('.')[0] + ".json"), "w", encoding="utf-8") as f:
+        #         json.dump(extractions, f, ensure_ascii=False, indent=4)
+        # else:
+        #     st.write("Something wrong with extraction service, please check!")
+
         return os.path.join("docs/inference/", uploaded_file.name)
 
     def canvas_available_width(self, ui_width, doc_width, device_type, device_width):
@@ -174,26 +182,22 @@ class DataInference:
             if submit:
                 button_placeholder.empty()
 
-                api_url = "https://katanaml-org-sparrow-ml.hf.space/api-inference/v1/sparrow-ml/inference"
+                api_url = "http://localhost:8080/invoice_process"
                 file_path = model.get_image_file()
 
                 with open(file_path, "rb") as file:
                     model_in_use = model.model_in_use
                     sparrow_key = settings.sparrow_key
 
-                    # Prepare the payload
-                    files = {
-                        'file': (file.name, file, 'image/jpeg')
-                    }
-
-                    data = {
-                        'image_url': '',
-                        'model_in_use': model_in_use,
-                        'sparrow_key': sparrow_key
-                    }
+                    # data = {
+                    #     'image_url': '',
+                    #     'model_in_use': model_in_use,
+                    #     'sparrow_key': sparrow_key
+                    # }
 
                     with st.spinner("Extracting data from document..."):
-                        response = requests.post(api_url, data=data, files=files, timeout=180)
+                        response = requests.post(api_url, files={"invoice": file}, timeout=180)
+
                 if response.status_code != 200:
                     print('Request failed with status code:', response.status_code)
                     print('Response:', response.text)
@@ -201,16 +205,17 @@ class DataInference:
                     st.session_state["inference_error"] = "Error extracting data from document"
                     st.experimental_rerun()
 
-                model.set_data_result(response.text)
+                extractions = json.loads(response.content.decode("utf-8"))
+                model.set_data_result(extractions)
 
                 # Display JSON data in Streamlit
                 st.markdown("---")
                 st.json(response.text)
 
                 # replace file extension to json
-                file_path = file_path.replace(".jpg", ".json")
-                with open(file_path, "w") as f:
-                    json.dump(response.text, f, indent=2)
+                file_path = file_path.split('.')[0] + ".json"
+                with open(file_path, "w", encoding="utf-8") as f:
+                    json.dump(extractions, f, ensure_ascii=False, indent=4)
 
                 st.experimental_rerun()
             else:

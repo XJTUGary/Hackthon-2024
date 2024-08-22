@@ -26,3 +26,5 @@ langchain-core>=0.0.50
 
 # LangChain integration with Google Vertex AI
 langchain_google_vertexai>=0.0.1
+
+flask==3.0.3
