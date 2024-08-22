@@ -1,9 +1,11 @@
 
 # Invoice Insight and Compliance Analyzer
 
+
 ## Overview
 
 This project is designed to extract key information from invoices and verify their compliance with company policies and relevant legal regulations. The system leverages state-of-the-art natural language processing (NLP) techniques and machine learning models to automate the entire process, ensuring accuracy and efficiency. Additionally, the system features an interactive chatbot interface, allowing users to inquire about invoice details and company reimbursement policies, with support for generating visual representations in responses.
+
 
 ## Key Features
 
@@ -14,6 +16,7 @@ This project is designed to extract key information from invoices and verify the
 - **Interactive Chatbot Interface**: Users can interact with the system via a chatbot to query invoice details, seek clarification on company policies, or ask general questions about the reimbursement process. The chatbot is capable of generating and displaying images in the responses for better clarity.
 
 - **Advanced NLP and AI Integration**: Utilizes LangChain for sequential task processing, Google Vertex AI for model training and inference, and Streamlit for building an intuitive user interface.
+
 
 ## Project Structure
 
@@ -46,6 +49,7 @@ This project is designed to extract key information from invoices and verify the
 |-- main.py                      # Main entry point for the application               
 ```
 
+
 ## Technologies Used
 
 - **Python**: The primary programming language used for the project.
@@ -53,6 +57,7 @@ This project is designed to extract key information from invoices and verify the
 - **Google Vertex AI**: A platform for training, deploying, and managing machine learning models.
 - **Streamlit**: A framework for building and deploying interactive web applications.
 - **Pandas**: For data manipulation and analysis.
+
 
 ## Installation
 
@@ -140,4 +145,8 @@ This project is licensed under the MIT License. See the [LICENSE](https://www.ap
 
 For any questions or suggestions, please contact:
 
+
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=XJTUGary/Hackthon-2024&type=Date)](https://star-history.com/#XJTUGary/Hackthon-2024&Date)
 
