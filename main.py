@@ -5,7 +5,7 @@ from tools.utilities import load_css
 from views.dashboard import Dashboard
 from views.data_inference import DataInference
 from views.data_review import DataReview
-from views.about import About
+from views.chat import Chat
 
 import streamlit_javascript as st_js
 
@@ -105,7 +105,7 @@ def view(model):
         logout_widget()
 
     if menuItem == model.option4:
-        About().view(About.Model())
+        Chat().view(Chat.Model())
         logout_widget()
 
 

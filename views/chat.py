@@ -1,9 +1,7 @@
 import streamlit as st
-from PIL import Image
-from tools.st_functions import st_button
 
 
-class About:
+class Chat:
     class Model:
         pageTitle = "Chat"
 
