@@ -1,0 +1,23 @@
+{
+    "invoice_type": "Hotel",
+    "invoice_code": "",
+    "issue_date": "",
+    "vendor": "Intercontinental Tokyo Bay",
+    "customer": "",
+    "city": "Tokyo",
+    "currency": "",
+    "amount": "20,000",
+    "Check#": "HDL055936",
+    "Room#": "1205",
+    "Reduced 8% tax is applied": "軽減税率対象商品です",
+    "Subject to 10% Tax": "10%対象税額",
+    "10% Tax Amount": "10%対象税額",
+    "Subject to 8% Tax": "8%対象税額",
+    "8% Tax Amount": "8%対象税額",
+    "Non-Taxble": "立替・他店受外",
+    "Accommodation Tax": "宿泊税",
+    "Guest Signature": "ご署名",
+    "Application No": "T6010401002786",
+    "Copies of the Chits are not attached as guest receives them at every meal and on use of other facilities": "株会社ベストセキュリティネットワーク\nCopies of the Chits are not attached as guest receives them\nat every meal and on use of other facilities",
+    "I agree that my liability for this bill is not waived and agree to be held personally liable in the event that the indicated person, company or association fails to pay all or part of these charges.": "I agree that my liability for this bill is not waived and agree to be held personally liable in the event that the indicated person, company or association fails to pay all or part of these charges."
+}

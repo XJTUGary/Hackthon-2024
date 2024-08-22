@@ -6,7 +6,7 @@ import math
 from streamlit_sparrow_labeling import st_sparrow_labeling
 import json
 import pandas as pd
-import numpy as np
+from glob import glob
 
 
 
@@ -71,7 +71,7 @@ class DataReview:
 
         ## Create DataFrame
         df = pd.DataFrame(data)
-        df['INVOICE DATE'] = pd.to_datetime(df['INVOICE DATE'])
+        df['issue_date'] = pd.to_datetime(df['issue_date'])
 
         # Add custom CSS for the label
         st.markdown("""
@@ -96,7 +96,7 @@ class DataReview:
                 order = st.selectbox(label="ASC/DESC", options=["ASC", "DESC"])
 
             with st.expander("Advanced search query"):
-                invoice_types = df['TYPE'].unique()
+                invoice_types = df['invoice_type'].unique()
                 min_date = pd.to_datetime("2000-10-01")
                 max_date = pd.to_datetime("2025-10-01")
                 col1, col2 = st.columns(2)
@@ -117,11 +117,11 @@ class DataReview:
             filtered_df = df[df.apply(lambda row: row.astype(str).str.contains(search_term, case=False).any(), axis=1)]
 
             if type_multiselect:
-                filtered_df = filtered_df[filtered_df['TYPE'].isin(type_multiselect)]
+                filtered_df = filtered_df[filtered_df['invoice_type'].isin(type_multiselect)]
 
             start_date, end_date = date_range
-            filtered_df = filtered_df[(filtered_df['INVOICE DATE'] >= pd.to_datetime(start_date)) &
-                                      (filtered_df['INVOICE DATE'] <= pd.to_datetime(end_date))]
+            filtered_df = filtered_df[(filtered_df['issue_date'] >= pd.to_datetime(start_date)) &
+                                      (filtered_df['issue_date'] <= pd.to_datetime(end_date))]
 
             # Apply sorting
             if order_by in filtered_df.columns:
@@ -185,7 +185,8 @@ class DataReview:
         #     else:
         #         st.title(model.initial_msg)
 
-        attributes_to_display = ["INVOICE NO", "INVOICE DATE", "TYPE", "SELLER", "CLIENT", "TOTAL GROSS WORTH"]
+        attributes_to_display = [
+            "invoice_type", "invoice_code", "issue_date", "vendor", "customer", "city", "currency", "amount"]
         # 显示每行的标题和内容
         for i, row in filtered_df.iterrows():
             title = "\u2002|\u2002".join([f"{attr}: {row[attr]}" for attr in attributes_to_display])

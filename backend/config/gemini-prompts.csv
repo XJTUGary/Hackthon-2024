@@ -14,12 +14,12 @@ invoice_extractor,"You are a document entity extraction specialist. Given a docu
 Using this JSON schema:
 {
     ""invoice_code"": """",
-    ""issue_date"": """",
+    ""issue_date"": ""2024-01-02"",
     ""vendor"": """",
     ""customer"": """",
     ""city"": """",
     ""currency"": """",
-    ""amount"": """"£¬
+    ""amount"": """",
     ""other_info"": {}
 }
 return a dict

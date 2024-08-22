@@ -5,6 +5,7 @@ from backend.gemini_worker import GeminiInvoiceWorker
 
 
 app = Flask(__name__)
+app.json.sort_keys = False
 
 
 @app.route('/', methods=['GET'])

@@ -29,22 +29,24 @@ class GeminiInvoiceWorker(GeminiWorker):
         super().__init__(genai=genai)
 
     def process(self, image):
+        doc_extraction = {}
         image = Image.open(BytesIO(image.read()))
 
+        # classification
         response = self.multimodal_model_flash.generate_content([self.role_prompts['invoice_classifier'], image])
         doc_classification = response.text.strip()
-        print(doc_classification)
+        doc_extraction["invoice_type"] = doc_classification
 
+        # extraction
         response = self.multimodal_model_flash.generate_content([self.role_prompts['invoice_extractor'], image])
-        doc_extraction = response.text.strip()
+        extractions = response.text.strip()
         print("\n-------Extracted Entities--------")
-        doc_extraction = doc_extraction.replace('```json', '').replace('```', '').strip()
-        doc_extraction = json.loads(doc_extraction)
-        doc_extraction.update(doc_extraction['other_info'])
-        del doc_extraction['other_info']
-        doc_extraction['invoice_type'] = doc_classification
-        print(doc_extraction)
+        extractions = json.loads(extractions.replace('```json', '').replace('```', '').strip())
+        extractions.update(extractions['other_info'])
+        del extractions['other_info']
 
+        doc_extraction.update(extractions)
+        print(doc_extraction)
         return doc_extraction
 
 
@@ -109,11 +111,11 @@ class GeminiInvoiceWorker(GeminiWorker):
 #             generation_config=genai.GenerationConfig(temperature=0.2),
 #         )
 
-
-if __name__ == "__main__":
-    os.environ["GOOGLE_API_KEY"] = "AIzaSyBmh0EHQb3krLfUIZ7BC_Cgn2bu1URmqGM"
-
-    genai.configure(api_key=os.getenv("GOOGLE_API_KEY"), transport='rest')
-
-    llmer = GeminiInvoiceCLSNERWorker(genai=genai)
-    llmer.process('data/japan_hotel.jpg')
+#
+# if __name__ == "__main__":
+#     os.environ["GOOGLE_API_KEY"] = "AIzaSyBmh0EHQb3krLfUIZ7BC_Cgn2bu1URmqGM"
+#
+#     genai.configure(api_key=os.getenv("GOOGLE_API_KEY"), transport='rest')
+#
+#     llmer = GeminiInvoiceCLSNERWorker(genai=genai)
+#     llmer.process('data/japan_hotel.jpg')
