@@ -1,0 +1,28 @@
+streamlit==1.24.0
+streamlit_option_menu==0.3.6
+streamlit-sparrow-labeling==0.1.1
+streamlit_nested_layout==0.1.1
+streamlit-javascript==0.1.5
+natsort
+streamlit-aggrid==0.3.3
+pandas<2.0
+
+# Google Cloud Vertex AI SDK
+google-cloud-aiplatform>=1.0.0
+
+# Weaviate for Vector Store
+weaviate-client>=3.8.0
+
+# LangChain for creating chains and LLM utilities
+langchain>=0.0.150
+
+langchain-community
+
+# Pydantic for data validation and settings management
+pydantic>=1.10.0
+
+# Core dependencies from LangChain's core module
+langchain-core>=0.0.50
+
+# LangChain integration with Google Vertex AI
+langchain_google_vertexai>=0.0.1
