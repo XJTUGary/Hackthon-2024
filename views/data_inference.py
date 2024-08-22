@@ -13,7 +13,7 @@ class DataInference:
     class Model:
         # pageTitle = "Data Inference"
         subheader_2 = "Upload"
-        initial_msg = "Please upload a file for inference"
+        initial_msg = "Please upload a file for extraction"
 
         upload_help = "Upload a file to extract data from it"
         upload_button_text = "Upload"
