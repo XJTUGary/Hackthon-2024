@@ -7,6 +7,7 @@ from langchain_community.document_loaders import TextLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import Weaviate
 import weaviate
+from pandasai.llm import GoogleGemini
 from weaviate.embedded import EmbeddedOptions
 from langchain.prompts import PromptTemplate
 from langchain.schema.output_parser import StrOutputParser
@@ -14,14 +15,17 @@ from langchain.chains import RetrievalQA
 from langchain_core.output_parsers import JsonOutputParser
 from langchain_core.pydantic_v1 import BaseModel, Field
 
+from chains.utils import get_llm
+
+
 class InvoiceComplianceChecker:
     """
     A class to handle the process of checking invoice compliance with given policies.
     """
 
     def __init__(self, model_name: str, credentials_path: str, document_path: str):
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = credentials_path
-        self.model = VertexAI(model_name=model_name, api_transport='rest')
+
+        self.model = get_llm()
         self.documents = self._load_documents(document_path)
         self.embeddings = self._get_embeddings()
         self.vectorstore = self._get_vectorstore()
